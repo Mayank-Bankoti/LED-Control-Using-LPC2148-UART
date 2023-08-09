@@ -1,0 +1,211 @@
+ARM COMPILER V2.40a,  LED_UART                                                             09/08/23  08:08:48  PAGE 1   
+
+
+ARM COMPILER V2.40a, COMPILATION OF MODULE LED_UART
+OBJECT MODULE PLACED IN LED_UART.OBJ
+COMPILER INVOKED BY: C:\Keil\ARM\BIN\CA.exe LED_UART.c THUMB BROWSE DEBUG TABS(4) 
+
+stmt  level    source
+
+    1          #include "LPC214X.h"
+    2          #define LED_PIN (1 << 11)
+    3          
+    4          unsigned char receive()
+    5          {
+    6   1          while(!(U0LSR & 0x01));
+    7   1          return (U0RBR);
+    8   1      }
+    9          
+   10          void transmit(unsigned char ch)
+   11          {
+   12   1       while (!(U0LSR & 0x20));
+   13   1       
+   14   1       U0THR =ch;
+   15   1      }
+   16          
+   17          
+   18          int main()
+   19           {
+   20   1           unsigned char  temp[30] = "Welcome to FC" ;
+   21   1           IO0DIR |= LED_PIN;
+   22   1           PINSEL0 = 5;
+   23   1           U0LCR = 0x83;
+   24   1           U0DLM =0x00;
+   25   1           U0DLL =97;
+   26   1           U0LCR =0x03;
+   27   1           while(1)
+   28   1           {
+   29   2       char command = receive();  // Receive a character from UART
+   30   2      
+   31   2              // If the received command is '1', turn ON the LED; if '0', turn OFF the LED
+   32   2              if (command == '1') {
+   33   3                  IO0SET = LED_PIN;  // Turn ON the LED
+   34   3              } else if (command == '0') {
+   35   3                  IO0CLR = LED_PIN;  // Turn OFF the LED
+   36   3              }
+   37   2           }
+   38   1           return 0;
+   39   1      }
+ARM COMPILER V2.40a,  LED_UART                                                             09/08/23  08:08:48  PAGE 2   
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+
+*** EXTERNALS:
+ EXTERN NUMBER (__startup)
+
+
+
+*** PUBLICS:
+ PUBLIC         receive?T
+ PUBLIC         transmit?T
+ PUBLIC         main
+
+
+
+*** DATA SEGMENT '?CON?LED_UART':
+ 00000000          ?tpl?0001:
+ 00000000           BEGIN_INIT
+ 00000000            DB          'Welcome to FC',0x00
+ 0000000E            SPACE       16
+ 0000001E           END_INIT
+
+
+
+*** CODE SEGMENT '?PR?receive?T?LED_UART':
+    6:     while(!(U0LSR & 0x01));
+ 00000000          L_1:
+ 00000000  4800      LDR         R0,=0xE000C014
+ 00000002  7800      LDRB        R0,[R0,#0x0]
+ 00000004  2101      MOV         R1,#0x1
+ 00000006  4208      TST         R0,R1
+ 00000008  D0FA      BEQ         L_1  ; T=0x00000000
+    7:     return (U0RBR);
+ 0000000A  4800      LDR         R0,=0xE000C000
+ 0000000C  7800      LDRB        R0,[R0,#0x0]
+    8: }
+ 0000000E  4770      BX          R14
+ 00000010          ENDP ; 'receive?T'
+
+
+*** CODE SEGMENT '?PR?transmit?T?LED_UART':
+   10: void transmit(unsigned char ch)
+ 00000000  1C02      MOV         R2,R0 ; ch
+ 00000002  ---- Variable 'ch' assigned to Register 'R2' ----
+   12:  while (!(U0LSR & 0x20));
+ 00000002          L_6:
+ 00000002  4800      LDR         R0,=0xE000C014
+ 00000004  7800      LDRB        R0,[R0,#0x0]
+ 00000006  2120      MOV         R1,#0x20
+ 00000008  4208      TST         R0,R1
+ 0000000A  D0FA      BEQ         L_6  ; T=0x00000002
+   14:  U0THR =ch;
+ 0000000C  1C11      MOV         R1,R2 ; ch
+ 0000000E  4800      LDR         R0,=0xE000C000
+ 00000010  7001      STRB        R1,[R0,#0x0]
+   15: }
+ 00000012  4770      BX          R14
+ 00000014          ENDP ; 'transmit?T'
+
+
+*** CODE SEGMENT '?PR?main?LED_UART':
+   18: int main()
+ 00000000  B500      PUSH        {LR}
+ 00000002  B088      SUB         R13,#0x20
+   19:  {
+ 00000004            ; SCOPE-START
+   20:      unsigned char  temp[30] = "Welcome to FC" ;
+ 00000004  4800      LDR         R1,=?tpl?0001 ; ?tpl?0001
+ 00000006  A800      ADD         R0,R13,#0x0
+ 00000008  221E      MOV         R2,#0x1E
+ 0000000A          L_19:
+ 0000000A  780B      LDRB        R3,[R1,#0x0]
+ 0000000C  7003      STRB        R3,[R0,#0x0]
+ 0000000E  1C49      ADD         R1,R1,#0x1
+ 00000010  1C40      ADD         R0,R0,#0x1
+ 00000012  1E52      SUB         R2,R2,#0x1
+ARM COMPILER V2.40a,  LED_UART                                                             09/08/23  08:08:48  PAGE 3   
+
+ 00000014  D1F9      BNE         L_19  ; T=0x0000000A
+   21:      IO0DIR |= LED_PIN;
+ 00000016  4800      LDR         R2,=0x800
+ 00000018  4800      LDR         R0,=0xE0028008
+ 0000001A  6801      LDR         R1,[R0,#0x0]
+ 0000001C  4311      ORR         R1,R2
+ 0000001E  6001      STR         R1,[R0,#0x0]
+   22:       PINSEL0 = 5;
+ 00000020  2105      MOV         R1,#0x5
+ 00000022  4800      LDR         R0,=0xE002C000
+ 00000024  6001      STR         R1,[R0,#0x0]
+   23:      U0LCR = 0x83;
+ 00000026  2183      MOV         R1,#0x83
+ 00000028  4800      LDR         R0,=0xE000C00C
+ 0000002A  7001      STRB        R1,[R0,#0x0]
+   24:      U0DLM =0x00;
+ 0000002C  2100      MOV         R1,#0x0
+ 0000002E  4800      LDR         R0,=0xE000C004
+ 00000030  7001      STRB        R1,[R0,#0x0]
+   25:      U0DLL =97;
+ 00000032  2161      MOV         R1,#0x61
+ 00000034  4800      LDR         R0,=0xE000C000
+ 00000036  7001      STRB        R1,[R0,#0x0]
+   26:      U0LCR =0x03;
+ 00000038  2103      MOV         R1,#0x3
+ 0000003A  4800      LDR         R0,=0xE000C00C
+ 0000003C  7001      STRB        R1,[R0,#0x0]
+   27:      while(1)
+ 0000003E          L_12:
+   28:      {
+ 0000003E            ; SCOPE-START
+   29:  char command = receive();  // Receive a character from UART
+ 0000003E  F7FF      BL          receive?T  ; T=0x0001  (1)
+ 00000040  FFDF      BL          receive?T  ; T=0x0001  (2)
+ 00000042  1C02      MOV         R2,R0 ; command
+ 00000044  ---- Variable 'command' assigned to Register 'R2' ----
+   32:         if (command == '1') {
+ 00000044  1C10      MOV         R0,R2 ; command
+ 00000046  0600      LSL         R0,R0,#0x18 ; command
+ 00000048  0E00      LSR         R0,R0,#0x18
+ 0000004A  2831      CMP         R0,#0x31
+ 0000004C  D103      BNE         L_14  ; T=0x00000056
+   33:             IO0SET = LED_PIN;  // Turn ON the LED
+ 0000004E  4800      LDR         R1,=0x800
+ 00000050  4800      LDR         R0,=0xE0028004
+ 00000052  6001      STR         R1,[R0,#0x0]
+   34:         } else if (command == '0') {
+ 00000054  E7F3      B           L_12  ; T=0x0000003E
+ 00000056          L_14:
+ 00000056  1C10      MOV         R0,R2 ; command
+ 00000058  0600      LSL         R0,R0,#0x18 ; command
+ 0000005A  0E00      LSR         R0,R0,#0x18
+ 0000005C  2830      CMP         R0,#0x30
+ 0000005E  D1EE      BNE         L_12  ; T=0x0000003E
+   35:             IO0CLR = LED_PIN;  // Turn OFF the LED
+ 00000060  4800      LDR         R1,=0x800
+ 00000062  4800      LDR         R0,=0xE002800C
+ 00000064  6001      STR         R1,[R0,#0x0]
+   36:         }
+ 00000066            ; SCOPE-END
+   37:      }
+ 00000066  E7EA      B           L_12  ; T=0x0000003E
+   38:      return 0;
+ 00000068            ; SCOPE-END
+ 00000068  B008      ADD         R13,#0x20
+ 0000006A  BC08      POP         {R3}
+ARM COMPILER V2.40a,  LED_UART                                                             09/08/23  08:08:48  PAGE 4   
+
+ 0000006C  4718      BX          R3
+ 0000006E          ENDP ; 'main'
+
+
+
+Module Information          Static
+----------------------------------
+  code size            =    ------
+  data size            =    ------
+  const size           =        30
+End of Module Information.
+
+
+ARM COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
